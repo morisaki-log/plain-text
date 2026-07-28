@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>もりさき臨床 v0.2</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#81d8d0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="もりさき臨床">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--mint:#81d8d0;--mint-dark:#2b8f89;--bg:#f5fbfa;--text:#173c3a;--line:#d5ece9;--card:#fff;--muted:#6c8582;}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:5;background:rgba(245,251,250,.95);backdrop-filter:blur(12px);padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;font-size:18px}.sub{font-size:12px;color:var(--muted);margin-top:2px}.wrap{max-width:520px;margin:auto;padding:14px 14px calc(92px + env(safe-area-inset-bottom))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(26,94,88,.06)}
+h2{font-size:16px;margin:0 0 10px}.row{display:flex;gap:8px}.row>*{flex:1}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;background:#fff;color:var(--text)}textarea{min-height:96px;resize:vertical}
+.btn{border:0;border-radius:14px;padding:13px 14px;font-weight:700;font-size:15px;background:var(--mint);color:#113f3c;width:100%}.btn.secondary{background:#e8f7f5}.btn.ghost{background:#fff;border:1px solid var(--line)}.btn.danger{background:#fdeaea;color:#8a2525}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pill{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:8px 10px;margin:3px 3px 0 0;font-size:13px;background:#fff}.pill input{width:auto;margin-right:5px}
+.patient{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;margin-top:8px;background:#fff}.patient strong{display:block}.patient small{color:var(--muted)}
+.nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;gap:6px;z-index:10}.nav button{flex:1;border:0;background:#fff;color:var(--muted);font-size:11px;padding:7px 2px;border-radius:12px}.nav button.active{background:#e8f7f5;color:var(--mint-dark);font-weight:700}
+.hidden{display:none}.media-list img{width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid var(--line);margin:4px}.note{font-size:12px;color:var(--muted);line-height:1.6}.preview{white-space:pre-wrap;line-height:1.8;background:#fff;border:1px dashed var(--mint-dark);border-radius:14px;padding:14px}.tag{font-size:12px;padding:4px 8px;border-radius:999px;background:#e8f7f5;color:var(--mint-dark)}
+</style>
+</head>
+<body>
+<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.2</div></header>
+<main class="wrap">
+<section id="home" class="screen">
+  <div class="card"><h2>患者検索</h2><input id="search" placeholder="氏名・フリガナ" /></div>
+  <div class="card"><button class="btn" onclick="showScreen('new')">＋ 新規患者登録</button></div>
+  <div class="card"><h2>患者一覧</h2><div id="patientList"></div></div>
+</section>
+
+<section id="new" class="screen hidden">
+  <div class="card"><h2>患者基本情報</h2>
+    <label>氏名</label><input id="name" placeholder="例：山田 太郎" />
+    <label>フリガナ</label><input id="kana" placeholder="ヤマダ タロウ" />
+    <div class="row"><div><label>生年月日</label><input id="dob" type="date" /></div><div><label>初診日</label><input id="firstDate" type="date" /></div></div>
+    <label>電話番号</label><input id="phone" inputmode="tel" />
+    <label>主訴</label><textarea id="chief"></textarea>
+    <label>既往歴・服薬・アレルギー</label><textarea id="medical"></textarea>
+    <button class="btn" onclick="savePatient()">患者を登録</button>
+  </div>
+</section>
+
+<section id="record" class="screen hidden">
+  <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="recordName">患者</h2><span class="tag">iPhone入力</span></div>
+    <label>診療日</label><input id="visitDate" type="date" />
+    <label>今日の診療記録</label><textarea id="voiceNote" placeholder="iPhoneキーボードのマイクから音声入力できます"></textarea>
+    <div class="grid" style="margin-top:10px"><button class="btn secondary" onclick="document.getElementById('cameraInput').click()">📷 写真を撮る</button><button class="btn secondary" onclick="document.getElementById('imageInput').click()">📱 スクショ追加</button></div>
+    <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment" multiple />
+    <input id="imageInput" class="hidden" type="file" accept="image/*" multiple />
+    <div id="mediaList" class="media-list"></div>
+  </div>
+  <div class="card"><h2>原因候補</h2>
+    <label>候補名・商品名</label><input id="causeName" placeholder="例：歯磨き粉" />
+    <label>確認段階</label><select id="certainty"><option>患者の記憶</option><option>画像で確認</option><option>実物で確認</option></select>
+    <label>状態</label><div><label class="pill"><input type="radio" name="state" value="探索中" checked>探索中</label><label class="pill"><input type="radio" name="state" value="保留">保留</label><label class="pill"><input type="radio" name="state" value="除外">除外</label><label class="pill"><input type="radio" name="state" value="確認済み">確認済み</label></div>
+    <label>メモ</label><textarea id="causeMemo"></textarea>
+  </div>
+  <div class="card"><h2>患者さんへのアドバイス</h2>
+    <label>推奨商品・使用方法</label><textarea id="advice" placeholder="商品名、使い方、次回までの確認事項など"></textarea>
+    <div class="grid"><button class="btn ghost" onclick="makeHandout()">患者資料を作る</button><button class="btn" onclick="saveRecord()">診療録を保存</button></div>
+  </div>
+</section>
+
+<section id="handout" class="screen hidden">
+  <div class="card"><h2>患者さん向け資料</h2><div id="handoutPreview" class="preview"></div></div>
+  <div class="card grid"><button class="btn ghost" onclick="window.print()">印刷</button><button class="btn" onclick="copyHandout()">文章をコピー</button></div>
+  <div class="card"><p class="note">内部の思考メモや探索の詳細は、自動では患者資料に載せない設計です。</p></div>
+</section>
+</main>
+
+<nav class="nav"><button id="nav-home" class="active" onclick="showScreen('home')">患者</button><button id="nav-new" onclick="showScreen('new')">新規</button><button id="nav-record" onclick="openLatest()">診療</button><button id="nav-handout" onclick="showScreen('handout')">資料</button></nav>
+<script>
+const $=id=>document.getElementById(id);let currentPatient=null;let currentMedia=[];
+const today=()=>new Date().toISOString().slice(0,10);$('firstDate').value=today();$('visitDate').value=today();
+function getPatients(){return JSON.parse(localStorage.getItem('morisakiPatients')||'[]')}
+function setPatients(v){localStorage.setItem('morisakiPatients',JSON.stringify(v))}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));let n=$('nav-'+id);if(n)n.classList.add('active');if(id==='home')renderPatients()}
+function savePatient(){let p={id:Date.now(),name:$('name').value.trim(),kana:$('kana').value.trim(),dob:$('dob').value,firstDate:$('firstDate').value,phone:$('phone').value,chief:$('chief').value,medical:$('medical').value,records:[]};if(!p.name){alert('氏名を入力してください');return}let a=getPatients();a.unshift(p);setPatients(a);currentPatient=p.id;openPatient(p.id)}
+function renderPatients(){let q=$('search').value.trim().toLowerCase();let a=getPatients().filter(p=>(p.name+p.kana).toLowerCase().includes(q));$('patientList').innerHTML=a.length?a.map(p=>`<div class="patient" onclick="openPatient(${p.id})"><div><strong>${p.name}</strong><small>${p.chief||'主訴未入力'}</small></div><span>›</span></div>`).join(''):'<p class="note">患者はまだ登録されていません。</p>'}
+$('search').addEventListener('input',renderPatients);
+function openPatient(id){currentPatient=id;let p=getPatients().find(x=>x.id===id);if(!p)return;$('recordName').textContent=p.name;$('voiceNote').value='';$('causeName').value='';$('causeMemo').value='';$('advice').value='';currentMedia=[];$('mediaList').innerHTML='';showScreen('record')}
+function openLatest(){let a=getPatients();if(currentPatient)return openPatient(currentPatient);if(a[0])return openPatient(a[0].id);showScreen('new')}
+function readFiles(files){[...files].forEach(f=>{let r=new FileReader();r.onload=e=>{currentMedia.push(e.target.result);$('mediaList').innerHTML=currentMedia.map(src=>`<img src="${src}">`).join('')};r.readAsDataURL(f)})}
+$('cameraInput').addEventListener('change',e=>readFiles(e.target.files));$('imageInput').addEventListener('change',e=>readFiles(e.target.files));
+function recordData(){let state=document.querySelector('input[name=state]:checked').value;return{date:$('visitDate').value,note:$('voiceNote').value,cause:{name:$('causeName').value,certainty:$('certainty').value,state,memo:$('causeMemo').value},advice:$('advice').value,media:currentMedia}}
+function saveRecord(){if(!currentPatient){alert('患者を選んでください');return}let a=getPatients();let p=a.find(x=>x.id===currentPatient);p.records.unshift(recordData());setPatients(a);alert('診療録を保存しました')}
+function makeHandout(){let p=getPatients().find(x=>x.id===currentPatient);let r=recordData();let txt=`${p?p.name:'患者'} 様\n\n【本日のご案内】\n${r.advice||'次回までの確認事項をここに記載します。'}\n\n【確認中のもの】\n${r.cause.name?`${r.cause.name}（${r.cause.certainty}）`:'特になし'}\n\n診療日：${r.date}\nもりさき鍼灸治療院`; $('handoutPreview').textContent=txt;showScreen('handout')}
+async function copyHandout(){try{await navigator.clipboard.writeText($('handoutPreview').textContent);alert('コピーしました')}catch(e){alert('コピーできませんでした') }}
+renderPatients();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script>
+</body></html>
