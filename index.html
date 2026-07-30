@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>もりさき臨床 v0.3</title>
+<title>もりさき臨床 v0.4</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#81d8d0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,7 +31,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
 </style>
 </head>
 <body>
-<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.3</div></header>
+<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.4</div></header>
 <main class="wrap">
 <div class="warn">この版は操作確認用です。データはこのiPhoneのブラウザ内だけに保存されます。実在する患者さんの情報はまだ入力しないでください。</div>
 
@@ -48,9 +48,12 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
     <label>氏名</label><input id="name" placeholder="例：テスト 太郎" />
     <label>フリガナ</label><input id="kana" placeholder="テスト タロウ" />
     <div class="row"><div><label>生年月日</label><input id="dob" type="date" /></div><div><label>初診日</label><input id="firstDate" type="date" /></div></div>
-    <label>電話番号</label><input id="phone" inputmode="tel" placeholder="000-0000-0000" />
+    <div class="row"><div><label>性別</label><select id="sex"><option value="">未選択</option><option>男性</option><option>女性</option><option>その他・回答なし</option></select></div><div><label>電話番号</label><input id="phone" inputmode="tel" placeholder="000-0000-0000" /></div></div>
+    <label>住所</label><input id="address" />
+    <div class="row"><div><label>職業</label><input id="occupation" /></div><div><label>紹介者</label><input id="referrer" /></div></div>
     <label>主訴</label><textarea id="chief" placeholder="操作確認用の架空情報を入力"></textarea>
     <label>既往歴・服薬・アレルギー</label><textarea id="medical"></textarea>
+    <label>注意事項・自由メモ</label><textarea id="patientMemo"></textarea>
     <div class="grid" style="margin-top:12px"><button class="btn" onclick="savePatient()">保存</button><button id="deletePatientBtn" class="btn danger hidden" onclick="deletePatient()">患者を削除</button></div>
   </div>
 </section>
@@ -62,7 +65,11 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
   </div>
   <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><h2>今回の診療記録</h2><span class="tag">iPhone入力</span></div>
     <label>診療日</label><input id="visitDate" type="date" />
-    <label>今日の診療記録</label><textarea id="voiceNote" placeholder="キーボードのマイクから音声入力できます"></textarea>
+    <label>状態</label><div><label class="pill"><input type="radio" name="phase" value="急性">急性</label><label class="pill"><input type="radio" name="phase" value="慢性" checked>慢性</label></div>
+    <label>患者さんの自覚・訴え</label><textarea id="subjective" placeholder="キーボードのマイクから音声入力できます"></textarea>
+    <label>反応・スキャン記録</label><textarea id="reaction" placeholder="反応部位や変化を記録"></textarea>
+    <label>先生メモ</label><textarea id="voiceNote" placeholder="考えたことを音声入力できます"></textarea>
+    <label>次回確認すること</label><textarea id="nextCheck"></textarea>
     <div class="grid" style="margin-top:10px"><button class="btn secondary" onclick="document.getElementById('cameraInput').click()">📷 写真を撮る</button><button class="btn secondary" onclick="document.getElementById('imageInput').click()">📱 スクショ追加</button></div>
     <input id="cameraInput" class="hidden" type="file" accept="image/*" capture="environment" />
     <input id="imageInput" class="hidden" type="file" accept="image/*" multiple />
@@ -76,7 +83,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
   </div>
   <div class="card"><h2>患者さんへのアドバイス</h2>
     <label>推奨商品・使用方法・次回までの確認事項</label><textarea id="advice"></textarea>
-    <div class="grid"><button class="btn ghost" onclick="makeHandout()">患者資料を作る</button><button class="btn" onclick="saveRecord()">診療録を保存</button></div>
+    <div class="grid"><button class="btn ghost" onclick="makeHandout()">患者資料を作る</button><button id="saveRecordBtn" class="btn" onclick="saveRecord()">診療録を保存</button></div>
   </div>
   <div class="card"><h2>過去の診療記録</h2><div id="historyList"></div></div>
 </section>
@@ -87,37 +94,56 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
   <div class="card grid"><button class="btn ghost" onclick="window.print()">印刷</button><button class="btn" onclick="copyHandout()">文章をコピー</button></div>
   <div class="card"><p class="note">内部の思考メモや探索の詳細は、患者資料へ自動では載せません。</p></div>
 </section>
+
+<section id="settings" class="screen hidden">
+  <button class="back" onclick="showScreen('home')">‹ 患者一覧へ戻る</button>
+  <div class="card"><h2>テストデータ管理</h2>
+    <p class="note">この試作品のデータは、このiPhoneのSafari内だけに保存されます。</p>
+    <div class="grid"><button class="btn ghost" onclick="exportData()">バックアップを書き出す</button><button class="btn secondary" onclick="document.getElementById('importInput').click()">バックアップを読み込む</button></div>
+    <input id="importInput" class="hidden" type="file" accept="application/json,.json">
+    <button class="btn danger" style="margin-top:10px" onclick="clearAllData()">すべてのテストデータを削除</button>
+  </div>
+</section>
 </main>
 
-<nav class="nav"><button id="nav-home" class="active" onclick="showScreen('home')">患者</button><button id="nav-patientForm" onclick="startNewPatient()">新規</button><button id="nav-record" onclick="openLatest()">診療</button><button id="nav-handout" onclick="showScreen('handout')">資料</button></nav>
+<nav class="nav"><button id="nav-home" class="active" onclick="showScreen('home')">患者</button><button id="nav-patientForm" onclick="startNewPatient()">新規</button><button id="nav-record" onclick="openLatest()">診療</button><button id="nav-settings" onclick="showScreen('settings')">設定</button></nav>
 <script>
-const $=id=>document.getElementById(id);let currentPatient=null;let currentMedia=[];
+const $=id=>document.getElementById(id);let currentPatient=null;let currentMedia=[];let editingRecordId=null;
 const today=()=>new Date().toISOString().slice(0,10);$('firstDate').value=today();$('visitDate').value=today();
-function getPatients(){try{return JSON.parse(localStorage.getItem('morisakiPatientsV03')||'[]')}catch{return []}}
-function setPatients(v){localStorage.setItem('morisakiPatientsV03',JSON.stringify(v))}
+function getPatients(){try{return JSON.parse(localStorage.getItem('morisakiPatientsV04')||'[]')}catch{return []}}
+function setPatients(v){localStorage.setItem('morisakiPatientsV04',JSON.stringify(v))}
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));let n=$('nav-'+id);if(n)n.classList.add('active');if(id==='home')renderPatients();if(id==='record')renderHistory()}
-function clearPatientForm(){['patientId','name','kana','dob','phone','chief','medical'].forEach(id=>$(id).value='');$('firstDate').value=today();$('deletePatientBtn').classList.add('hidden');$('patientFormTitle').textContent='新規患者登録'}
+function clearPatientForm(){['patientId','name','kana','dob','sex','phone','address','occupation','referrer','chief','medical','patientMemo'].forEach(id=>$(id).value='');$('firstDate').value=today();$('deletePatientBtn').classList.add('hidden');$('patientFormTitle').textContent='新規患者登録'}
 function startNewPatient(){clearPatientForm();showScreen('patientForm')}
-function savePatient(){let id=Number($('patientId').value)||Date.now();let p={id,name:$('name').value.trim(),kana:$('kana').value.trim(),dob:$('dob').value,firstDate:$('firstDate').value,phone:$('phone').value.trim(),chief:$('chief').value.trim(),medical:$('medical').value.trim(),records:[]};if(!p.name){alert('氏名を入力してください');return}let a=getPatients();let i=a.findIndex(x=>x.id===id);if(i>=0){p.records=a[i].records||[];a[i]=p}else{a.unshift(p)}setPatients(a);currentPatient=id;openPatient(id)}
-function renderPatients(){let q=$('search').value.trim().toLowerCase();let a=getPatients().filter(p=>(p.name+p.kana).toLowerCase().includes(q));$('patientList').innerHTML=a.length?a.map(p=>`<div class="patient" onclick="openPatient(${p.id})"><div><strong>${esc(p.name)}</strong><small>${esc(p.chief||'主訴未入力')} ・ 記録 ${(p.records||[]).length}件</small></div><span class="chev">›</span></div>`).join(''):'<div class="empty">患者はまだ登録されていません。</div>'}
+function savePatient(){let id=Number($('patientId').value)||Date.now();let p={id,name:$('name').value.trim(),kana:$('kana').value.trim(),dob:$('dob').value,firstDate:$('firstDate').value,sex:$('sex').value,phone:$('phone').value.trim(),address:$('address').value.trim(),occupation:$('occupation').value.trim(),referrer:$('referrer').value.trim(),chief:$('chief').value.trim(),medical:$('medical').value.trim(),patientMemo:$('patientMemo').value.trim(),records:[]};if(!p.name){alert('氏名を入力してください');return}let a=getPatients();let i=a.findIndex(x=>x.id===id);if(i>=0){p.records=a[i].records||[];a[i]=p}else{a.unshift(p)}setPatients(a);currentPatient=id;openPatient(id)}
+function renderPatients(){let q=$('search').value.trim().toLowerCase();let a=getPatients().filter(p=>(p.name+p.kana).toLowerCase().includes(q));$('patientList').innerHTML=a.length?a.map(p=>{let rs=p.records||[];let last=rs.length?rs[0].date:'未受診';return `<div class="patient" onclick="openPatient(${p.id})"><div><strong>${esc(p.name)}</strong><small>${esc(p.chief||'主訴未入力')} ・ 最終 ${esc(last)} ・ 記録 ${rs.length}件</small></div><span class="chev">›</span></div>`}).join(''):'<div class="empty">患者はまだ登録されていません。</div>'}
 $('search').addEventListener('input',renderPatients);
 function openPatient(id){currentPatient=id;let p=getPatients().find(x=>x.id===id);if(!p)return;$('recordName').textContent=p.name;$('recordMeta').textContent=`初診日：${p.firstDate||'未入力'}　主訴：${p.chief||'未入力'}`;resetRecordForm();showScreen('record')}
-function resetRecordForm(){$('visitDate').value=today();$('voiceNote').value='';$('causeName').value='';$('certainty').value='患者の記憶';document.querySelector('input[name=state][value="探索中"]').checked=true;$('causeMemo').value='';$('advice').value='';currentMedia=[];renderMedia()}
+function resetRecordForm(){$('visitDate').value=today();$('subjective').value='';$('reaction').value='';$('voiceNote').value='';$('nextCheck').value='';document.querySelector('input[name=phase][value="慢性"]').checked=true;$('causeName').value='';$('certainty').value='患者の記憶';document.querySelector('input[name=state][value="探索中"]').checked=true;$('causeMemo').value='';$('advice').value='';currentMedia=[];editingRecordId=null;$('saveRecordBtn').textContent='診療録を保存';renderMedia();loadDraft()}
 function openLatest(){let a=getPatients();if(currentPatient)return openPatient(currentPatient);if(a[0])return openPatient(a[0].id);startNewPatient()}
-function editCurrentPatient(){let p=getPatients().find(x=>x.id===currentPatient);if(!p)return;['name','kana','dob','firstDate','phone','chief','medical'].forEach(id=>$(id).value=p[id]||'');$('patientId').value=p.id;$('patientFormTitle').textContent='患者基本情報を編集';$('deletePatientBtn').classList.remove('hidden');showScreen('patientForm')}
+function editCurrentPatient(){let p=getPatients().find(x=>x.id===currentPatient);if(!p)return;['name','kana','dob','firstDate','sex','phone','address','occupation','referrer','chief','medical','patientMemo'].forEach(id=>$(id).value=p[id]||'');$('patientId').value=p.id;$('patientFormTitle').textContent='患者基本情報を編集';$('deletePatientBtn').classList.remove('hidden');showScreen('patientForm')}
 function deletePatient(){if(!currentPatient)return;if(!confirm('このテスト患者と診療記録を削除しますか？'))return;let a=getPatients().filter(x=>x.id!==currentPatient);setPatients(a);currentPatient=null;clearPatientForm();showScreen('home')}
 function compressImage(file,max=1200,quality=.78){return new Promise((resolve,reject)=>{let r=new FileReader();r.onerror=reject;r.onload=()=>{let img=new Image();img.onerror=reject;img.onload=()=>{let scale=Math.min(1,max/Math.max(img.width,img.height));let c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality))};img.src=r.result};r.readAsDataURL(file)})}
 async function readFiles(files){for(const f of [...files]){if(!f.type.startsWith('image/'))continue;if(currentMedia.length>=4){alert('試作品では1回につき画像4枚までです');break}try{currentMedia.push(await compressImage(f));renderMedia()}catch{alert('画像を読み込めませんでした')}}}
 function renderMedia(){$('mediaList').innerHTML=currentMedia.map((src,i)=>`<div class="media-wrap"><img src="${src}" alt="添付画像"><button class="media-remove" onclick="removeMedia(${i})">×</button></div>`).join('')}
 function removeMedia(i){currentMedia.splice(i,1);renderMedia()}
 $('cameraInput').addEventListener('change',e=>{readFiles(e.target.files);e.target.value=''});$('imageInput').addEventListener('change',e=>{readFiles(e.target.files);e.target.value=''})
-function recordData(){let state=document.querySelector('input[name=state]:checked').value;return{id:Date.now(),date:$('visitDate').value,note:$('voiceNote').value.trim(),cause:{name:$('causeName').value.trim(),certainty:$('certainty').value,state,memo:$('causeMemo').value.trim()},advice:$('advice').value.trim(),media:currentMedia}}
-function saveRecord(){if(!currentPatient){alert('患者を選んでください');return}let a=getPatients();let p=a.find(x=>x.id===currentPatient);if(!p)return;let r=recordData();if(!r.note&&!r.cause.name&&!r.advice&&!r.media.length){alert('記録内容を入力してください');return}p.records=p.records||[];p.records.unshift(r);try{setPatients(a)}catch(e){alert('保存容量が不足しました。画像を減らしてください');return}alert('診療録を保存しました');resetRecordForm();renderHistory()}
-function renderHistory(){let p=getPatients().find(x=>x.id===currentPatient);if(!p)return;let rs=p.records||[];$('historyList').innerHTML=rs.length?rs.map(r=>`<div class="history-item"><div class="history-head"><strong>${esc(r.date||'日付なし')}</strong><button class="btn danger small" style="width:auto" onclick="deleteRecord(${r.id})">削除</button></div><div class="history-body">${r.note?`【記録】\n${esc(r.note)}\n`:''}${r.cause?.name?`【原因候補】\n${esc(r.cause.name)}／${esc(r.cause.certainty)}／${esc(r.cause.state)}\n`:''}${r.advice?`【アドバイス】\n${esc(r.advice)}`:''}</div>${r.media?.length?`<div class="media-list">${r.media.map(src=>`<img src="${src}">`).join('')}</div>`:''}</div>`).join(''):'<div class="empty">保存済みの診療記録はありません。</div>'}
-function deleteRecord(id){if(!confirm('この診療記録を削除しますか？'))return;let a=getPatients();let p=a.find(x=>x.id===currentPatient);p.records=(p.records||[]).filter(r=>r.id!==id);setPatients(a);renderHistory()}
-function makeHandout(){let p=getPatients().find(x=>x.id===currentPatient);if(!p){alert('患者を選んでください');return}let r=recordData();let txt=`${p.name} 様\n\n【本日のご案内】\n${r.advice||'次回までの確認事項をここに記載します。'}\n\n【確認中のもの】\n${r.cause.name?`${r.cause.name}（${r.cause.certainty}）`:'特になし'}\n\n診療日：${r.date}\nもりさき鍼灸治療院`;$('handoutPreview').textContent=txt;showScreen('handout')}
+function recordData(){let state=document.querySelector('input[name=state]:checked').value;let phase=document.querySelector('input[name=phase]:checked').value;return{id:editingRecordId||Date.now(),date:$('visitDate').value,phase,subjective:$('subjective').value.trim(),reaction:$('reaction').value.trim(),note:$('voiceNote').value.trim(),nextCheck:$('nextCheck').value.trim(),cause:{name:$('causeName').value.trim(),certainty:$('certainty').value,state,memo:$('causeMemo').value.trim()},advice:$('advice').value.trim(),media:currentMedia}}
+function saveRecord(){if(!currentPatient){alert('患者を選んでください');return}let a=getPatients();let p=a.find(x=>x.id===currentPatient);if(!p)return;let r=recordData();if(!r.subjective&&!r.reaction&&!r.note&&!r.nextCheck&&!r.cause.name&&!r.advice&&!r.media.length){alert('記録内容を入力してください');return}p.records=p.records||[];if(editingRecordId){let i=p.records.findIndex(x=>x.id===editingRecordId);if(i>=0)p.records[i]=r}else{p.records.unshift(r)};try{setPatients(a)}catch(e){alert('保存容量が不足しました。画像を減らしてください');return}alert(editingRecordId?'診療録を更新しました':'診療録を保存しました');localStorage.removeItem('morisakiDraftV04_'+currentPatient);resetRecordForm();renderHistory();renderPatients()}
+function renderHistory(){let p=getPatients().find(x=>x.id===currentPatient);if(!p)return;let rs=p.records||[];$('historyList').innerHTML=rs.length?rs.map(r=>`<div class="history-item"><div class="history-head"><strong>${esc(r.date||'日付なし')} ${r.phase?`・${esc(r.phase)}`:''}</strong><div style="display:flex;gap:5px"><button class="btn ghost small" style="width:auto" onclick="editRecord(${r.id})">編集</button><button class="btn danger small" style="width:auto" onclick="deleteRecord(${r.id})">削除</button></div></div><div class="history-body">${r.subjective?`【自覚・訴え】\n${esc(r.subjective)}\n`:''}${r.reaction?`【反応】\n${esc(r.reaction)}\n`:''}${r.note?`【先生メモ】\n${esc(r.note)}\n`:''}${r.nextCheck?`【次回確認】\n${esc(r.nextCheck)}\n`:''}${r.cause?.name?`【原因候補】\n${esc(r.cause.name)}／${esc(r.cause.certainty)}／${esc(r.cause.state)}\n`:''}${r.advice?`【アドバイス】\n${esc(r.advice)}`:''}</div>${r.media?.length?`<div class="media-list">${r.media.map(src=>`<img src="${src}">`).join('')}</div>`:''}</div>`).join(''):'<div class="empty">保存済みの診療記録はありません。</div>'}
+function editRecord(id){let p=getPatients().find(x=>x.id===currentPatient);let r=(p?.records||[]).find(x=>x.id===id);if(!r)return;editingRecordId=id;$('visitDate').value=r.date||today();document.querySelector(`input[name=phase][value="${r.phase||'慢性'}"]`).checked=true;$('subjective').value=r.subjective||'';$('reaction').value=r.reaction||'';$('voiceNote').value=r.note||'';$('nextCheck').value=r.nextCheck||'';$('causeName').value=r.cause?.name||'';$('certainty').value=r.cause?.certainty||'患者の記憶';document.querySelector(`input[name=state][value="${r.cause?.state||'探索中'}"]`).checked=true;$('causeMemo').value=r.cause?.memo||'';$('advice').value=r.advice||'';currentMedia=[...(r.media||[])];$('saveRecordBtn').textContent='診療録を更新';renderMedia();window.scrollTo({top:0,behavior:'smooth'})}
+function deleteRecord(id){if(!confirm('この診療記録を削除しますか？'))return;let a=getPatients();let p=a.find(x=>x.id===currentPatient);p.records=(p.records||[]).filter(r=>r.id!==id);setPatients(a);renderHistory();renderPatients()}
+function makeHandout(){let p=getPatients().find(x=>x.id===currentPatient);if(!p){alert('患者を選んでください');return}let r=recordData();let txt=`${p.name} 様\n\n【本日の状態】\n${r.subjective||'記載なし'}\n\n【次回までのご案内】\n${r.advice||r.nextCheck||'次回までの確認事項をここに記載します。'}\n\n【確認中のもの】\n${r.cause.name?`${r.cause.name}（${r.cause.certainty}）`:'特になし'}\n\n診療日：${r.date}\nもりさき鍼灸治療院`;$('handoutPreview').textContent=txt;showScreen('handout')}
 async function copyHandout(){try{await navigator.clipboard.writeText($('handoutPreview').textContent);alert('コピーしました')}catch{alert('コピーできませんでした。文章を長押しして選択してください')}}
+
+function draftKey(){return 'morisakiDraftV04_'+currentPatient}
+function saveDraft(){if(!currentPatient||editingRecordId)return;let d=recordData();try{localStorage.setItem(draftKey(),JSON.stringify(d))}catch{}}
+function loadDraft(){if(!currentPatient)return;try{let d=JSON.parse(localStorage.getItem(draftKey())||'null');if(!d)return;$('visitDate').value=d.date||today();document.querySelector(`input[name=phase][value="${d.phase||'慢性'}"]`).checked=true;$('subjective').value=d.subjective||'';$('reaction').value=d.reaction||'';$('voiceNote').value=d.note||'';$('nextCheck').value=d.nextCheck||'';$('causeName').value=d.cause?.name||'';$('certainty').value=d.cause?.certainty||'患者の記憶';document.querySelector(`input[name=state][value="${d.cause?.state||'探索中'}"]`).checked=true;$('causeMemo').value=d.cause?.memo||'';$('advice').value=d.advice||'';currentMedia=d.media||[];renderMedia()}catch{}}
+document.addEventListener('input',e=>{if(e.target.closest('#record'))saveDraft()});document.addEventListener('change',e=>{if(e.target.closest('#record'))saveDraft()});
+function exportData(){let blob=new Blob([JSON.stringify({version:'0.4',exportedAt:new Date().toISOString(),patients:getPatients()},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`morisaki-test-backup-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
+$('importInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.patients))throw Error();if(confirm('現在のテストデータを読み込んだ内容で置き換えますか？')){setPatients(d.patients);currentPatient=null;renderPatients();alert('読み込みました')}}catch{alert('読み込めないファイルです')}};r.readAsText(f);e.target.value=''})
+function clearAllData(){if(!confirm('すべてのテスト患者と診療記録を削除しますか？'))return;localStorage.removeItem('morisakiPatientsV04');Object.keys(localStorage).filter(k=>k.startsWith('morisakiDraftV04_')).forEach(k=>localStorage.removeItem(k));currentPatient=null;renderPatients();alert('削除しました')}
 renderPatients();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 </script>
