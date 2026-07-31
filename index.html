@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>もりさき臨床 v0.6</title>
+<title>もりさき臨床 v0.6.1</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#81d8d0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,12 +28,15 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
 .history-item{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:9px;cursor:pointer}.history-item:active{background:#f1fbfa}.history-body{display:none}.history-item.open .history-body{display:block}.history-item.open .history-toggle{transform:rotate(90deg)}.history-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.history-toggle{display:inline-block;transition:.15s}.history-body{display:none;font-size:13px;line-height:1.65;margin-top:7px;white-space:pre-wrap}.empty{text-align:center;padding:18px 4px;color:var(--muted)}
 .warn{background:#fff8e8;border:1px solid #f2d99b;color:#725a21;border-radius:14px;padding:11px;font-size:12px;line-height:1.55;margin-bottom:12px}
 .back{display:inline-flex;align-items:center;gap:4px;color:var(--mint-dark);font-weight:700;font-size:14px;margin-bottom:10px;background:none;border:0;padding:0}.save-state{font-size:12px;color:var(--muted);text-align:right;margin-top:8px}.section-title{font-size:14px;font-weight:800;color:var(--mint-dark);margin:14px 0 4px;padding-top:8px;border-top:1px dashed var(--line)}
+
+.address-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.postal-row{display:grid;grid-template-columns:1fr auto;gap:8px}.postal-row .btn{width:auto;white-space:nowrap}.address-result{margin-top:7px;padding:10px 12px;border-radius:12px;background:#f0faf8;font-size:13px;line-height:1.55;color:var(--muted)}.address-result.ok{color:var(--text);border:1px solid var(--line)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(16,47,45,.36);z-index:30;display:flex;align-items:flex-end;justify-content:center}.modal-backdrop.hidden{display:none}.modal{width:min(520px,100%);max-height:88vh;overflow:auto;background:var(--bg);border-radius:24px 24px 0 0;padding:16px 14px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.16)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.modal-head h2{margin:0}.close-btn{border:0;background:#fff;border:1px solid var(--line);width:38px;height:38px;border-radius:50%;font-size:20px;color:var(--muted)}.breadcrumb{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.choice-btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:14px;padding:13px 9px;text-align:left;font-weight:700;min-height:48px}.choice-btn:active{background:#e7f7f5}.choice-btn.wide{grid-column:1/-1}.modal-note{font-size:12px;color:var(--muted);line-height:1.55;margin-top:10px}
 </style>
 </head>
 <body>
-<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.6</div></header>
+<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.6.1</div></header>
 <main class="wrap">
-<div class="warn">この版は操作確認用です。実際の診療手順に近づけるため、初診・再診、初期観察、発症時期、時間帯、使用物の確認欄を追加しました。実在する患者さんの情報は、正式な安全対策が整うまで入力しないでください。</div>
+<div class="warn">この版は操作確認用です。患者登録に「〒 郵便番号から」と「地域を押して選ぶ」住所入力を追加しました。実在する患者さんの情報は、正式な安全対策が整うまで入力しないでください。</div>
 
 <section id="home" class="screen">
   <div class="card"><h2>患者検索</h2><input id="search" placeholder="氏名・フリガナ" autocomplete="off" /></div>
@@ -50,7 +53,17 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
     <label>フリガナ</label><input id="kana" placeholder="テスト タロウ" />
     <div class="row"><div><label>生年月日</label><input id="dob" type="date" /></div><div><label>初診日</label><input id="firstDate" type="date" /></div></div>
     <div class="row"><div><label>性別</label><select id="sex"><option value="">未選択</option><option>男性</option><option>女性</option><option>その他・回答なし</option></select></div><div><label>電話番号</label><input id="phone" inputmode="tel" placeholder="000-0000-0000" /></div></div>
-    <label>住所</label><input id="address" />
+    <label>住所</label>
+    <div class="address-actions">
+      <button class="btn secondary small" type="button" onclick="focusPostalCode()">〒 郵便番号から</button>
+      <button class="btn secondary small" type="button" onclick="openAddressPicker()">地域を押して選ぶ</button>
+    </div>
+    <label>郵便番号</label>
+    <div class="postal-row"><input id="postalCode" inputmode="numeric" autocomplete="postal-code" maxlength="8" placeholder="806-0021" /><button class="btn small" type="button" onclick="lookupPostalCode()">住所検索</button></div>
+    <div id="postalStatus" class="address-result">ハイフンあり・なしのどちらでも検索できます。</div>
+    <label>都道府県・市区町村・町域</label><input id="addressBase" autocomplete="address-level1" placeholder="例：福岡県北九州市八幡西区黒崎" />
+    <label>番地・建物名・部屋番号</label><input id="addressDetail" autocomplete="street-address" placeholder="例：1-2-3 ○○ビル101" />
+    <input id="address" type="hidden" />
     <div class="row"><div><label>職業</label><input id="occupation" /></div><div><label>紹介者</label><input id="referrer" /></div></div>
     <label>主訴</label><textarea id="chief" placeholder="操作確認用の架空情報を入力"></textarea>
     <label>既往歴・服薬・アレルギー</label><textarea id="medical"></textarea>
@@ -126,10 +139,19 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
 </section>
 </main>
 
+<div id="addressPicker" class="modal-backdrop hidden" onclick="if(event.target===this)closeAddressPicker()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addressPickerTitle">
+    <div class="modal-head"><h2 id="addressPickerTitle">地域を押して選ぶ</h2><button class="close-btn" type="button" onclick="closeAddressPicker()">×</button></div>
+    <div id="addressBreadcrumb" class="breadcrumb">地方を選択してください</div>
+    <div id="addressChoices" class="choice-grid"></div>
+    <div class="modal-note">選択肢にない町名は「ここまで入力」を押し、住所欄へ直接追加できます。</div>
+  </div>
+</div>
+
 <nav class="nav"><button id="nav-home" class="active" onclick="showScreen('home')">患者</button><button id="nav-patientForm" onclick="startNewPatient()">新規</button><button id="nav-record" onclick="openLatest()">診療</button><button id="nav-settings" onclick="showScreen('settings')">設定</button></nav>
 <script>
 const $=id=>document.getElementById(id);let currentPatient=null;let currentMedia=[];let editingRecordId=null;
-const APP_VERSION='0.6';const PATIENT_KEY='morisakiPatientsV06';const SETTINGS_KEY='morisakiSettingsV06';const AUDIT_KEY='morisakiAuditV06';
+const APP_VERSION='0.6.1';const PATIENT_KEY='morisakiPatientsV06';const SETTINGS_KEY='morisakiSettingsV06';const AUDIT_KEY='morisakiAuditV06';
 const today=()=>new Date().toISOString().slice(0,10);const nowIso=()=>new Date().toISOString();$('firstDate').value=today();$('visitDate').value=today();
 function getSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'null')||{clinicId:'main',clinicName:'本院',operatorId:'owner',operatorName:'森崎 善喬',operatorRole:'院長'}}catch{return{clinicId:'main',clinicName:'本院',operatorId:'owner',operatorName:'森崎 善喬',operatorRole:'院長'}}}
 function setSettings(v){localStorage.setItem(SETTINGS_KEY,JSON.stringify(v))}
@@ -144,15 +166,63 @@ function nextChartNo(){let a=getPatients(),y=String(new Date().getFullYear()),nu
 function ageFromDob(dob){if(!dob)return '';let d=new Date(dob),n=new Date(),age=n.getFullYear()-d.getFullYear();if(n.getMonth()<d.getMonth()||(n.getMonth()===d.getMonth()&&n.getDate()<d.getDate()))age--;return age>=0?`${age}歳`:''}
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));let n=$('nav-'+id);if(n)n.classList.add('active');if(id==='home')renderPatients();if(id==='record')renderHistory();if(id==='settings'){loadAppSettings();renderBackupStatus()}}
-function clearPatientForm(){['patientId','chartNo','name','kana','dob','sex','phone','address','occupation','referrer','chief','medical','patientMemo'].forEach(id=>$(id).value='');$('firstDate').value=today();$('chartNo').value=nextChartNo();$('deletePatientBtn').classList.add('hidden');$('patientFormTitle').textContent='新規患者登録'}
+const ADDRESS_DATA={
+  '九州':{
+    '福岡県':{
+      '北九州市':{
+        '門司区':['門司','柳町','大里本町','大里戸ノ上','吉志','新門司','恒見町','その他'],
+        '若松区':['若松','本町','浜町','白山','二島','高須','ひびきの','塩屋','小敷ひびきの','その他'],
+        '戸畑区':['戸畑','浅生','天籟寺','中原','一枝','夜宮','福柳木','千防','その他'],
+        '小倉北区':['小倉','魚町','京町','室町','砂津','大手町','片野','三萩野','足立','中井','その他'],
+        '小倉南区':['城野','下曽根','徳力','守恒','志井','朽網','葛原','沼','企救丘','その他'],
+        '八幡東区':['中央','西本町','東田','枝光','高見','槻田','祝町','大蔵','その他'],
+        '八幡西区':['黒崎','黒崎城石','熊手','藤田','菅原町','筒井町','岸の浦','穴生','萩原','青山','相生町','鷹の巣','引野','永犬丸','三ヶ森','折尾','光明','本城','浅川','千代ケ崎','則松','陣原','木屋瀬','楠橋','香月中央','上上津役','下上津役','沖田','星ケ丘','その他']
+      },
+      '福岡市':{'博多区':['博多駅前','博多駅東','住吉','中洲','その他'],'中央区':['天神','大名','薬院','赤坂','その他'],'東区':['香椎','箱崎','千早','その他'],'南区':['大橋','高宮','その他'],'西区':['姪浜','今宿','その他'],'城南区':['別府','七隈','その他'],'早良区':['西新','百道','その他']},
+      '中間市':['中間','通谷','東中間','蓮花寺','その他'],
+      '直方市':['直方','感田','頓野','下境','その他'],
+      '宗像市':['赤間','東郷','田熊','くりえいと','その他'],
+      '飯塚市':['飯塚','新飯塚','柏の森','川津','その他'],
+      '遠賀郡':['水巻町','芦屋町','岡垣町','遠賀町','その他'],
+      '鞍手郡':['鞍手町','小竹町','その他'],
+      'その他の市町村':['市区町村を直接入力']
+    },
+    '佐賀県':{'市町村を直接入力':['町域を直接入力']},
+    '長崎県':{'市町村を直接入力':['町域を直接入力']},
+    '熊本県':{'市町村を直接入力':['町域を直接入力']},
+    '大分県':{'市町村を直接入力':['町域を直接入力']},
+    '宮崎県':{'市町村を直接入力':['町域を直接入力']},
+    '鹿児島県':{'市町村を直接入力':['町域を直接入力']},
+    '沖縄県':{'市町村を直接入力':['町域を直接入力']}
+  },
+  '九州以外':{'都道府県を直接入力':{'市区町村を直接入力':['町域を直接入力']}}
+};
+let addressPath=[];
+function normalizeDigits(v){return String(v||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0))}
+function postalDigits(v){return normalizeDigits(v).replace(/\D/g,'').slice(0,7)}
+function formatPostalCode(v){let d=postalDigits(v);return d.length===7?`${d.slice(0,3)}-${d.slice(3)}`:d}
+function focusPostalCode(){$('postalCode').focus();$('postalCode').scrollIntoView({behavior:'smooth',block:'center'})}
+$('postalCode').addEventListener('input',e=>{let d=postalDigits(e.target.value);e.target.value=d.length>3?`${d.slice(0,3)}-${d.slice(3)}`:d;if(d.length===7){$('postalStatus').textContent='「住所検索」を押すと町域まで自動入力します。';$('postalStatus').className='address-result ok'}});
+async function lookupPostalCode(){let d=postalDigits($('postalCode').value);if(d.length!==7){$('postalStatus').textContent='郵便番号を7桁で入力してください。';$('postalStatus').className='address-result';focusPostalCode();return}$('postalCode').value=formatPostalCode(d);$('postalStatus').textContent='住所を検索しています…';$('postalStatus').className='address-result';let controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{let res=await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${d}`,{signal:controller.signal,cache:'no-store'});let data=await res.json();let hit=data.results&&data.results[0];if(!hit)throw new Error('not found');$('addressBase').value=`${hit.address1||''}${hit.address2||''}${hit.address3||''}`;$('postalStatus').textContent='町域まで入力しました。続けて番地・建物名を入力してください。';$('postalStatus').className='address-result ok';$('addressDetail').focus()}catch(e){$('postalStatus').textContent='自動検索できませんでした。通信状態を確認するか、「地域を押して選ぶ」を使ってください。';$('postalStatus').className='address-result'}finally{clearTimeout(timer)}}
+function openAddressPicker(){addressPath=[];$('addressPicker').classList.remove('hidden');renderAddressChoices(ADDRESS_DATA)}
+function closeAddressPicker(){$('addressPicker').classList.add('hidden')}
+function addressLabel(){return addressPath.join(' → ')||'地方を選択してください'}
+function renderAddressChoices(node){$('addressBreadcrumb').textContent=addressLabel();let entries=Array.isArray(node)?node.map(v=>[v,null]):Object.entries(node);let html=entries.map(([label,child])=>`<button class="choice-btn" type="button" onclick='chooseAddressPart(${JSON.stringify(label)},${child===null?"null":"true"})'>${esc(label)}</button>`).join('');if(addressPath.length)html+=`<button class="choice-btn wide" type="button" onclick="applyAddressPath()">✓ ここまで入力</button><button class="choice-btn wide" type="button" onclick="addressPickerBack()">‹ 一つ戻る</button>`;$('addressChoices').innerHTML=html}
+function nodeAtPath(){let node=ADDRESS_DATA;for(let part of addressPath){if(Array.isArray(node))return node;node=node[part]}return node}
+function chooseAddressPart(label,isBranch){if(label.includes('直接入力')||label==='その他'){applyAddressPath();return}addressPath.push(label);let node=nodeAtPath();if(Array.isArray(node)){if(node.length===1&&node[0].includes('直接入力')){applyAddressPath();return}renderAddressChoices(node)}else if(node&&typeof node==='object'){renderAddressChoices(node)}else applyAddressPath()}
+function addressPickerBack(){addressPath.pop();renderAddressChoices(nodeAtPath())}
+function cleanAddressPath(){return addressPath.filter(x=>!['九州','九州以外','その他'].includes(x)&&!x.includes('直接入力')).join('')}
+function applyAddressPath(){let value=cleanAddressPath();if(value)$('addressBase').value=value;closeAddressPicker();$('addressBase').focus();$('postalStatus').textContent='選択した地域を入力しました。必要に応じて町名を追加してください。';$('postalStatus').className='address-result ok'}
+
+function clearPatientForm(){['patientId','chartNo','name','kana','dob','sex','phone','postalCode','addressBase','addressDetail','address','occupation','referrer','chief','medical','patientMemo'].forEach(id=>$(id).value='');$('firstDate').value=today();$('chartNo').value=nextChartNo();$('postalStatus').textContent='ハイフンあり・なしのどちらでも検索できます。';$('postalStatus').className='address-result';$('deletePatientBtn').classList.add('hidden');$('patientFormTitle').textContent='新規患者登録'}
 function startNewPatient(){clearPatientForm();showScreen('patientForm')}
-function savePatient(){let id=Number($('patientId').value)||Date.now(),st=getSettings(),a=getPatients(),i=a.findIndex(x=>x.id===id),old=i>=0?a[i]:null;let p={id,chartNo:old?.chartNo||$('chartNo').value||nextChartNo(),name:$('name').value.trim(),kana:$('kana').value.trim(),dob:$('dob').value,firstDate:$('firstDate').value,sex:$('sex').value,phone:$('phone').value.trim(),address:$('address').value.trim(),occupation:$('occupation').value.trim(),referrer:$('referrer').value.trim(),chief:$('chief').value.trim(),medical:$('medical').value.trim(),patientMemo:$('patientMemo').value.trim(),clinicId:old?.clinicId||st.clinicId,clinicName:old?.clinicName||st.clinicName,createdAt:old?.createdAt||nowIso(),updatedAt:nowIso(),createdBy:old?.createdBy||st.operatorName,updatedBy:st.operatorName,records:old?.records||[]};if(!p.name){alert('氏名を入力してください');return}if(i>=0)a[i]=p;else a.unshift(p);setPatients(a);addAudit(i>=0?'patient_update':'patient_create',id,p.name);currentPatient=id;openPatient(id)}
+function savePatient(){let id=Number($('patientId').value)||Date.now(),st=getSettings(),a=getPatients(),i=a.findIndex(x=>x.id===id),old=i>=0?a[i]:null;let addressBase=$('addressBase').value.trim(),addressDetail=$('addressDetail').value.trim(),fullAddress=[addressBase,addressDetail].filter(Boolean).join(' ');$('address').value=fullAddress;let p={id,chartNo:old?.chartNo||$('chartNo').value||nextChartNo(),name:$('name').value.trim(),kana:$('kana').value.trim(),dob:$('dob').value,firstDate:$('firstDate').value,sex:$('sex').value,phone:$('phone').value.trim(),postalCode:formatPostalCode($('postalCode').value),addressBase,addressDetail,address:fullAddress,occupation:$('occupation').value.trim(),referrer:$('referrer').value.trim(),chief:$('chief').value.trim(),medical:$('medical').value.trim(),patientMemo:$('patientMemo').value.trim(),clinicId:old?.clinicId||st.clinicId,clinicName:old?.clinicName||st.clinicName,createdAt:old?.createdAt||nowIso(),updatedAt:nowIso(),createdBy:old?.createdBy||st.operatorName,updatedBy:st.operatorName,records:old?.records||[]};if(!p.name){alert('氏名を入力してください');return}if(i>=0)a[i]=p;else a.unshift(p);setPatients(a);addAudit(i>=0?'patient_update':'patient_create',id,p.name);currentPatient=id;openPatient(id)}
 function renderPatients(){let q=$('search').value.trim().toLowerCase();let a=getPatients().filter(p=>(`${p.name||''}${p.kana||''}${p.chartNo||''}${p.phone||''}`).toLowerCase().includes(q));$('patientList').innerHTML=a.length?a.map(p=>{let rs=p.records||[];let last=rs.length?rs[0].date:'未受診';return `<div class="patient" onclick="openPatient(${p.id})"><div><strong>${esc(p.name)} <span class="tag">${esc(p.chartNo||'番号未発行')}</span></strong><small>${esc(p.chief||'主訴未入力')} ・ 最終 ${esc(last)} ・ 記録 ${rs.length}件</small></div><span class="chev">›</span></div>`}).join(''):'<div class="empty">患者はまだ登録されていません。</div>'}
 $('search').addEventListener('input',renderPatients);
 function openPatient(id){currentPatient=id;let p=getPatients().find(x=>x.id===id);if(!p)return;$('recordName').textContent=p.name;$('recordMeta').textContent=`${p.chartNo||'番号未発行'}　${ageFromDob(p.dob)}　初診日：${p.firstDate||'未入力'}　主訴：${p.chief||'未入力'}`;resetRecordForm();showScreen('record')}
 function resetRecordForm(){$('visitDate').value=today();$('visitType').value=(getPatients().find(x=>x.id===currentPatient)?.records||[]).length?'再診':'初診';$('observation').value='';$('subjective').value='';$('onset').value='';$('timePattern').value='';$('products').value='';$('oralMedication').value='';$('reaction').value='';$('voiceNote').value='';$('nextCheck').value='';document.querySelector('input[name=phase][value="慢性"]').checked=true;$('causeCategory').value='使用物・接触物';$('causeName').value='';$('certainty').value='患者の記憶';document.querySelector('input[name=state][value="探索中"]').checked=true;$('causeMemo').value='';$('advice').value='';currentMedia=[];editingRecordId=null;$('saveRecordBtn').textContent='診療録を保存';renderMedia();$('draftStatus').textContent='下書きは未保存です';loadDraft()}
 function openLatest(){let a=getPatients();if(currentPatient)return openPatient(currentPatient);if(a[0])return openPatient(a[0].id);startNewPatient()}
-function editCurrentPatient(){let p=getPatients().find(x=>x.id===currentPatient);if(!p)return;['chartNo','name','kana','dob','firstDate','sex','phone','address','occupation','referrer','chief','medical','patientMemo'].forEach(id=>$(id).value=p[id]||'');$('patientId').value=p.id;$('patientFormTitle').textContent='患者基本情報を編集';$('deletePatientBtn').classList.remove('hidden');showScreen('patientForm')}
+function editCurrentPatient(){let p=getPatients().find(x=>x.id===currentPatient);if(!p)return;['chartNo','name','kana','dob','firstDate','sex','phone','occupation','referrer','chief','medical','patientMemo'].forEach(id=>$(id).value=p[id]||'');$('postalCode').value=p.postalCode||'';$('addressBase').value=p.addressBase||p.address||'';$('addressDetail').value=p.addressDetail||'';$('address').value=p.address||'';$('postalStatus').textContent=p.postalCode?'保存済みの郵便番号です。':'郵便番号または地域選択から入力できます。';$('postalStatus').className='address-result';$('patientId').value=p.id;$('patientFormTitle').textContent='患者基本情報を編集';$('deletePatientBtn').classList.remove('hidden');showScreen('patientForm')}
 function deletePatient(){if(!currentPatient)return;if(!confirm('このテスト患者と診療記録を削除しますか？'))return;let p=getPatients().find(x=>x.id===currentPatient);let a=getPatients().filter(x=>x.id!==currentPatient);setPatients(a);addAudit('patient_delete',currentPatient,p?.name||'');currentPatient=null;clearPatientForm();showScreen('home')}
 function compressImage(file,max=1200,quality=.78){return new Promise((resolve,reject)=>{let r=new FileReader();r.onerror=reject;r.onload=()=>{let img=new Image();img.onerror=reject;img.onload=()=>{let scale=Math.min(1,max/Math.max(img.width,img.height));let c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality))};img.src=r.result};r.readAsDataURL(file)})}
 async function readFiles(files){for(const f of [...files]){if(!f.type.startsWith('image/'))continue;if(currentMedia.length>=4){alert('試作品では1回につき画像4枚までです');break}try{currentMedia.push(await compressImage(f));renderMedia()}catch{alert('画像を読み込めませんでした')}}}
@@ -176,11 +246,11 @@ function loadAppSettings(){let st=getSettings();$('clinicName').value=st.clinicN
 function saveAppSettings(){let old=getSettings(),st={...old,clinicName:$('clinicName').value.trim()||'本院',operatorName:$('operatorName').value.trim()||'未設定',operatorRole:$('operatorRole').value};setSettings(st);addAudit('settings_update','settings',`${st.clinicName}／${st.operatorName}`);alert('院・使用者の設定を保存しました');renderBackupStatus()}
 function dataSize(){let bytes=new Blob([JSON.stringify({patients:getPatients(),settings:getSettings(),audit:getAudit()})]).size;return bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/1024/1024).toFixed(1)} MB`}
 function renderBackupStatus(){if(!$('backupStatus'))return;let p=getPatients(),records=p.reduce((n,x)=>n+(x.records||[]).length,0),last=localStorage.getItem('morisakiLastBackupV06');$('backupStatus').innerHTML=`患者 ${p.length}人／診療記録 ${records}件／使用量 約${dataSize()}<br>最終書き出し：${last?new Date(last).toLocaleString('ja-JP'):'まだありません'}`}
-function exportData(){let payload={format:'morisaki-clinical-backup',version:APP_VERSION,exportedAt:nowIso(),settings:getSettings(),patients:getPatients(),auditLog:getAudit()};let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`morisaki-test-backup-v06-${today()}.json`;a.click();URL.revokeObjectURL(a.href);localStorage.setItem('morisakiLastBackupV06',payload.exportedAt);addAudit('backup_export','backup',`${payload.patients.length}人`);renderBackupStatus()}
+function exportData(){let payload={format:'morisaki-clinical-backup',version:APP_VERSION,exportedAt:nowIso(),settings:getSettings(),patients:getPatients(),auditLog:getAudit()};let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`morisaki-test-backup-v061-${today()}.json`;a.click();URL.revokeObjectURL(a.href);localStorage.setItem('morisakiLastBackupV06',payload.exportedAt);addAudit('backup_export','backup',`${payload.patients.length}人`);renderBackupStatus()}
 $('importInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.patients))throw Error();if(confirm(`バックアップの患者 ${d.patients.length}人を読み込み、現在のテストデータを置き換えますか？`)){setPatients(d.patients);if(d.settings)setSettings(d.settings);if(Array.isArray(d.auditLog))localStorage.setItem(AUDIT_KEY,JSON.stringify(d.auditLog));addAudit('backup_import','backup',f.name);currentPatient=null;renderPatients();loadAppSettings();renderBackupStatus();alert('バックアップを読み込みました')}}catch{alert('読み込めないバックアップファイルです')}};r.readAsText(f);e.target.value=''})
 function clearAllData(){if(!confirm('すべてのテスト患者・診療記録・操作履歴を削除しますか？'))return;localStorage.removeItem(PATIENT_KEY);localStorage.removeItem(AUDIT_KEY);Object.keys(localStorage).filter(k=>k.startsWith('morisakiDraftV06_')).forEach(k=>localStorage.removeItem(k));currentPatient=null;renderPatients();renderBackupStatus();alert('テストデータを削除しました')}
 migrateV05();migrateV04();loadAppSettings();renderBackupStatus();
 renderPatients();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=060',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=061',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}))}
 </script>
 </body></html>

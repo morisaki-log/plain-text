@@ -1,5 +1,5 @@
-const CACHE='morisaki-v060';
-const ASSETS=['./?v=060','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
+const CACHE='morisaki-v061';
+const ASSETS=['./?v=061','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
