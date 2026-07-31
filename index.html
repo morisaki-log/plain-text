@@ -31,7 +31,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
 </style>
 </head>
 <body>
-<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.5</div></header>
+<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.5.1</div></header>
 <main class="wrap">
 <div class="warn">この版は操作確認用です。分院・複数端末対応を見据えたデータ構造に更新しました。実在する患者さんの情報は、正式な安全対策が整うまで入力しないでください。</div>
 
@@ -167,6 +167,6 @@ $('importInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)ret
 function clearAllData(){if(!confirm('すべてのテスト患者・診療記録・操作履歴を削除しますか？'))return;localStorage.removeItem(PATIENT_KEY);localStorage.removeItem(AUDIT_KEY);Object.keys(localStorage).filter(k=>k.startsWith('morisakiDraftV05_')).forEach(k=>localStorage.removeItem(k));currentPatient=null;renderPatients();renderBackupStatus();alert('テストデータを削除しました')}
 migrateV04();loadAppSettings();renderBackupStatus();
 renderPatients();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=051',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}))}
 </script>
 </body></html>
