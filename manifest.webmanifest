@@ -1,12 +1,20 @@
 {
-  "name": "もりさき臨床",
+  "name": "もりさき臨床 v0.6",
   "short_name": "もりさき臨床",
-  "start_url": "./",
+  "start_url": "./?v=060",
   "display": "standalone",
   "background_color": "#f4fbfa",
   "theme_color": "#81d8d0",
   "icons": [
-    {"src":"icon-192.png","sizes":"192x192","type":"image/png"},
-    {"src":"icon-512.png","sizes":"512x512","type":"image/png"}
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
