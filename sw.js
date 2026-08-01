@@ -1,4 +1,4 @@
-const CACHE='morisaki-v07';
+const CACHE='morisaki-v08';
 const ASSETS=['./?v=062','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
