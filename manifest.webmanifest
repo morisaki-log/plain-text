@@ -1,7 +1,7 @@
 {
-  "name": "もりさき臨床 v0.6.1",
+  "name": "もりさき臨床 v0.6.2",
   "short_name": "もりさき臨床",
-  "start_url": "./?v=061",
+  "start_url": "./?v=062",
   "display": "standalone",
   "background_color": "#f4fbfa",
   "theme_color": "#81d8d0",
