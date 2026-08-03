@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>もりさき臨床 v0.8.1</title>
+<title>もりさき臨床 v0.9</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#81d8d0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,18 +37,57 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
 .hero-card{background:linear-gradient(145deg,#ffffff 0%,#e8f8f6 100%);border:1px solid #bfe4df;border-radius:22px;padding:18px;margin-bottom:12px}.hero-name{font-size:22px;font-weight:850;margin-bottom:4px}.hero-meta{font-size:13px;color:var(--muted);line-height:1.6}.start-btn{font-size:18px;padding:17px;margin-top:14px;box-shadow:0 8px 18px rgba(35,143,137,.18)}.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.quick-btn{border:1px solid var(--line);background:#fff;border-radius:15px;padding:12px 6px;font-size:12px;font-weight:750;color:var(--text)}.timeline{position:relative;margin-top:6px}.timeline:before{content:"";position:absolute;left:14px;top:10px;bottom:10px;width:2px;background:var(--line)}.timeline-row{position:relative;padding:0 0 15px 38px}.timeline-dot{position:absolute;left:7px;top:7px;width:16px;height:16px;border-radius:50%;background:var(--mint);border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}.timeline-card{border:1px solid var(--line);border-radius:15px;background:#fff;padding:11px}.timeline-card strong{font-size:14px}.timeline-card p{margin:5px 0 0;font-size:12px;color:var(--muted);line-height:1.55}.step-strip{display:flex;gap:6px;overflow:auto;padding:2px 0 10px}.step-chip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:8px 11px;background:#fff;font-size:12px;color:var(--muted)}.step-chip.active{background:#e2f6f3;color:var(--mint-dark);font-weight:800}.today-item{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:14px;padding:11px;margin-top:8px;background:#fff}.today-item small{display:block;color:var(--muted);margin-top:3px}.section-kicker{font-size:12px;color:var(--mint-dark);font-weight:800;letter-spacing:.03em;margin-bottom:5px}.sticky-save{position:sticky;bottom:78px;z-index:4;background:rgba(244,251,250,.94);padding:8px 0;backdrop-filter:blur(8px)}
 
 .yesno{display:flex;gap:8px;margin-top:6px}.yesno button{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:750;color:var(--muted)}.yesno button.selected{background:#dff5f2;border-color:var(--mint-dark);color:var(--mint-dark)}.tap-options{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}.tap-option{border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 12px;font-size:13px;font-weight:750;color:var(--muted)}.tap-option.selected{background:#dff5f2;border-color:var(--mint-dark);color:var(--mint-dark);box-shadow:0 0 0 1px var(--mint-dark)}.tap-option.alert.selected{background:#fdecec;border-color:#d97878;color:#963a3a}.multi-note{margin-top:9px}.conditional{margin-top:8px}.birth-grid{display:grid;grid-template-columns:.8fr 1.1fr .8fr .8fr;gap:7px;align-items:end}.birth-grid input,.birth-grid select{padding:11px 8px}.birth-year{background:#f0faf8!important}.revisit-first{border:2px solid #bfe4df;background:#f7fdfc}
+
+.ocr-drop{border:2px dashed #9dd9d3;border-radius:18px;background:#fbfefe;padding:18px;text-align:center}.ocr-drop img{max-width:100%;max-height:360px;border-radius:12px;display:block;margin:10px auto 0}.ocr-progress{height:10px;background:#e8f3f2;border-radius:999px;overflow:hidden;margin-top:10px}.ocr-progress span{display:block;height:100%;width:0;background:var(--mint-dark);transition:width .25s}.ocr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ocr-field{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px}.ocr-field label{margin-top:0}.ocr-raw{min-height:150px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}.drug-result{border:1px solid var(--line);background:#f7fdfc;border-radius:15px;padding:12px;margin-top:10px;line-height:1.65}.drug-result strong{color:var(--mint-dark)}.badge-beta{display:inline-block;background:#fff3cd;color:#7a5a00;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:800}.privacy-box{background:#edf8f6;border:1px solid #c9e8e4;border-radius:14px;padding:11px;font-size:12px;line-height:1.65}.import-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.confidence-low{border-color:#e1b45a!important;background:#fffaf0!important}
 </style>
 </head>
 <body>
-<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.8.1</div></header>
+<header><div class="brand">もりさき鍼灸治療院</div><div class="sub">臨床記録 試作品 v0.9</div></header>
 <main class="wrap">
-<div class="warn">この版は操作確認用です。フリガナ入力を安定化し、初診の「いつから」「現在の状態」「日内変動」「初期観察」をタップ中心にしました。再診では前回からの変化を最初に表示します。実在する患者さんの情報は、正式な安全対策が整うまで入力しないでください。</div>
+<div class="warn">この版は操作確認用です。現在の紙の問診票を写真から読み取り、患者登録の下書きを作る「OCR取り込み試作」と、薬名を確認する「薬剤アシスタント試作」を追加しました。OCR結果は必ず原票と照合してください。実在する患者情報は、正式な安全対策が整うまで入力しないでください。</div>
 
 <section id="home" class="screen">
   <div class="card"><h2>患者検索</h2><input id="search" placeholder="氏名・フリガナ" autocomplete="off" /></div>
-  <div class="card"><button class="btn" onclick="startNewPatient()">＋ 新規患者登録</button></div>
+  <div class="card"><div class="grid"><button class="btn" onclick="startNewPatient()">＋ 新規患者登録</button><button class="btn secondary" onclick="openOcrImport()">📄 問診票を取り込む</button></div></div>
   <div class="card"><h2>今日の診療</h2><div id="todayList"></div></div>
   <div class="card"><h2>患者一覧</h2><div id="patientList"></div></div>
+</section>
+
+<section id="ocrImport" class="screen hidden">
+  <button class="back" onclick="showScreen('home')">‹ 患者一覧へ戻る</button>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 style="margin:0">問診票OCR取り込み</h2><span class="badge-beta">試作</span></div>
+    <p class="note">現在使用中の問診票を撮影または選択し、患者登録の下書きを作ります。手書きOCRは誤読があるため、原票画像を見ながら確認してください。</p>
+    <div class="privacy-box">画像はこの端末のブラウザ内で解析します。OCR用プログラムと日本語モデルはインターネットから読み込みますが、選択した画像を当院以外の保存先へ自動送信する設計にはしていません。</div>
+    <div class="ocr-drop" style="margin-top:12px">
+      <strong>問診票を撮影・選択</strong><br><span class="note">影を避け、用紙全体がまっすぐ入るように撮影してください。</span>
+      <div class="import-actions" style="margin-top:12px"><button class="btn secondary" onclick="document.getElementById('ocrCamera').click()">📷 撮影する</button><button class="btn ghost" onclick="document.getElementById('ocrFile').click()">写真から選ぶ</button></div>
+      <input id="ocrCamera" class="hidden" type="file" accept="image/*" capture="environment"><input id="ocrFile" class="hidden" type="file" accept="image/*">
+      <img id="ocrPreview" class="hidden" alt="問診票プレビュー">
+    </div>
+    <button id="ocrStartBtn" class="btn" style="margin-top:12px" onclick="startOcr()" disabled>文字解析を開始</button>
+    <div id="ocrProgressWrap" class="hidden"><div class="ocr-progress"><span id="ocrProgressBar"></span></div><div id="ocrProgressText" class="save-state">準備中</div></div>
+  </div>
+  <div id="ocrResultsCard" class="card hidden"><h2>読み取り結果（編集できます）</h2>
+    <div class="ocr-grid">
+      <div class="ocr-field"><label>氏名</label><input id="ocrName"></div><div class="ocr-field"><label>フリガナ</label><input id="ocrKana"></div>
+      <div class="ocr-field"><label>生年月日</label><input id="ocrDob" placeholder="例：1986-03-02"></div><div class="ocr-field"><label>性別</label><select id="ocrSex"><option value="">未選択</option><option>男性</option><option>女性</option><option>その他・回答なし</option></select></div>
+      <div class="ocr-field"><label>郵便番号</label><input id="ocrPostal" inputmode="numeric"></div><div class="ocr-field"><label>電話番号</label><input id="ocrPhone" inputmode="tel"></div>
+    </div>
+    <label>住所</label><input id="ocrAddress">
+    <div class="row"><div><label>職業</label><input id="ocrOccupation"></div><div><label>紹介・来院経路</label><input id="ocrReferrer"></div></div>
+    <label>主訴</label><textarea id="ocrChief"></textarea>
+    <label>病院受診・診断</label><textarea id="ocrHospital"></textarea>
+    <label>薬・サプリ</label><textarea id="ocrMedication"></textarea>
+    <label>既往歴・その他</label><textarea id="ocrMedical"></textarea>
+    <div class="grid" style="margin-top:10px"><button class="btn" onclick="applyOcrToPatientForm()">患者登録へ反映</button><button class="btn ghost" onclick="clearOcrImport()">取り込みをやり直す</button></div>
+    <details style="margin-top:12px"><summary class="note">OCR全文を確認</summary><textarea id="ocrRawText" class="ocr-raw"></textarea></details>
+  </div>
+  <div class="card"><h2>薬剤アシスタント <span class="badge-beta">試作</span></h2>
+    <p class="note">薬名を入力すると、試作辞書に登録済みの薬は概要を表示します。未登録の場合はPMDAで正式情報を確認できます。薬の中止・変更を判断する機能ではありません。</p>
+    <div class="postal-row"><input id="drugQuery" placeholder="薬名を入力（例：ロキソニン）"><button class="btn small" onclick="lookupDrugGuide()">調べる</button></div>
+    <div id="drugResult" class="drug-result hidden"></div>
+  </div>
 </section>
 
 <section id="patientForm" class="screen hidden">
@@ -84,7 +123,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
     <label>主訴</label><textarea id="chief" placeholder="操作確認用の架空情報を入力"></textarea>
     <div class="section-title">既往歴・服薬など</div>
     <label>既往歴</label><input id="medicalHistoryStatus" type="hidden" value="なし"><div class="yesno" data-field="medicalHistory"><button type="button" class="selected" onclick="setYesNo('medicalHistory','なし')">なし</button><button type="button" onclick="setYesNo('medicalHistory','あり')">あり</button></div><div id="medicalHistoryDetailWrap" class="conditional hidden"><textarea id="medicalHistoryDetail" placeholder="病名・手術歴・時期など"></textarea></div>
-    <label>服薬</label><input id="medicationStatus" type="hidden" value="なし"><div class="yesno" data-field="medication"><button type="button" class="selected" onclick="setYesNo('medication','なし')">なし</button><button type="button" onclick="setYesNo('medication','あり')">あり</button></div><div id="medicationDetailWrap" class="conditional hidden"><textarea id="medicationDetail" placeholder="薬の名前・使用目的など"></textarea></div>
+    <label>服薬</label><input id="medicationStatus" type="hidden" value="なし"><div class="yesno" data-field="medication"><button type="button" class="selected" onclick="setYesNo('medication','なし')">なし</button><button type="button" onclick="setYesNo('medication','あり')">あり</button></div><div id="medicationDetailWrap" class="conditional hidden"><textarea id="medicationDetail" placeholder="薬の名前・使用目的など"></textarea><button type="button" class="btn ghost small" style="margin-top:7px" onclick="openDrugAssistantFromPatient()">薬の概要を確認</button></div>
     <label>アレルギー</label><input id="allergyStatus" type="hidden" value="なし"><div class="yesno" data-field="allergy"><button type="button" class="selected" onclick="setYesNo('allergy','なし')">なし</button><button type="button" onclick="setYesNo('allergy','あり')">あり</button></div><div id="allergyDetailWrap" class="conditional hidden"><textarea id="allergyDetail" placeholder="食品・薬剤・その他"></textarea></div>
     <label>サプリ・健康習慣</label><input id="supplementStatus" type="hidden" value="なし"><div class="yesno" data-field="supplement"><button type="button" class="selected" onclick="setYesNo('supplement','なし')">なし</button><button type="button" onclick="setYesNo('supplement','あり')">あり</button></div><div id="supplementDetailWrap" class="conditional hidden"><textarea id="supplementDetail" placeholder="サプリ、健康食品、継続している健康習慣など"></textarea></div>
     <input id="medical" type="hidden" />
@@ -245,7 +284,7 @@ label{display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}input,te
 <nav class="nav"><button id="nav-home" class="active" onclick="showScreen('home')">患者</button><button id="nav-patientForm" onclick="startNewPatient()">新規</button><button id="nav-patientHub" onclick="openLatest()">診療</button><button id="nav-settings" onclick="showScreen('settings')">設定</button></nav>
 <script>
 const $=id=>document.getElementById(id);let currentPatient=null;let currentMedia=[];let editingRecordId=null;
-const APP_VERSION='0.8.1';const PATIENT_KEY='morisakiPatientsV081';const SETTINGS_KEY='morisakiSettingsV081';const AUDIT_KEY='morisakiAuditV081';
+const APP_VERSION='0.9';const PATIENT_KEY='morisakiPatientsV081';const SETTINGS_KEY='morisakiSettingsV081';const AUDIT_KEY='morisakiAuditV081';
 const today=()=>new Date().toISOString().slice(0,10);const nowIso=()=>new Date().toISOString();$('firstDate').value=today();$('visitDate').value=today();
 function getSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY)||'null')||{clinicId:'main',clinicName:'本院',operatorId:'owner',operatorName:'森崎 善喬',operatorRole:'院長'}}catch{return{clinicId:'main',clinicName:'本院',operatorId:'owner',operatorName:'森崎 善喬',operatorRole:'院長'}}}
 function setSettings(v){localStorage.setItem(SETTINGS_KEY,JSON.stringify(v))}
@@ -280,7 +319,7 @@ function setBirthFromDob(dob){initBirthSelectors();if(!dob){$('ageInput').value=
 function setYesNo(field,value,detail=''){let status=$(field+'Status'),wrap=$(field+'DetailWrap'),input=$(field+'Detail');if(status)status.value=value;document.querySelectorAll(`.yesno[data-field="${field}"] button`).forEach(b=>b.classList.toggle('selected',b.textContent.trim()===value));wrap?.classList.toggle('hidden',value!=='あり');if(input&&detail!==undefined&&detail!==null)input.value=detail}
 function collectMedicalSummary(){let fields=[['既往歴','medicalHistory'],['服薬','medication'],['アレルギー','allergy'],['サプリ・健康習慣','supplement']];return fields.map(([label,key])=>`${label}：${$(key+'Status').value}${$(key+'Status').value==='あり'&&$(key+'Detail').value.trim()?`（${$(key+'Detail').value.trim()}）`:''}`).join(' / ')}
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));let n=$('nav-'+id);if(n)n.classList.add('active');if(id==='home')renderPatients();if(id==='patientHub')renderPatientHub();if(id==='record')renderHistory();if(id==='settings'){loadAppSettings();renderBackupStatus()}}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));let n=$('nav-'+id);if(n)n.classList.add('active');if(id==='home')renderPatients();if(id==='patientHub')renderPatientHub();if(id==='record')renderHistory();if(id==='settings'){loadAppSettings();renderBackupStatus()}if(id==='ocrImport')prepareOcrScreen()}
 const ADDRESS_DATA={
   '九州':{
     '福岡県':{
@@ -371,8 +410,55 @@ function renderBackupStatus(){if(!$('backupStatus'))return;let p=getPatients(),r
 function exportData(){let payload={format:'morisaki-clinical-backup',version:APP_VERSION,exportedAt:nowIso(),settings:getSettings(),patients:getPatients(),auditLog:getAudit()};let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`morisaki-test-backup-v07-${today()}.json`;a.click();URL.revokeObjectURL(a.href);localStorage.setItem('morisakiLastBackupV07',payload.exportedAt);addAudit('backup_export','backup',`${payload.patients.length}人`);renderBackupStatus()}
 $('importInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.patients))throw Error();if(confirm(`バックアップの患者 ${d.patients.length}人を読み込み、現在のテストデータを置き換えますか？`)){setPatients(d.patients);if(d.settings)setSettings(d.settings);if(Array.isArray(d.auditLog))localStorage.setItem(AUDIT_KEY,JSON.stringify(d.auditLog));addAudit('backup_import','backup',f.name);currentPatient=null;initBirthSelectors();renderPatients();loadAppSettings();renderBackupStatus();alert('バックアップを読み込みました')}}catch{alert('読み込めないバックアップファイルです')}};r.readAsText(f);e.target.value=''})
 function clearAllData(){if(!confirm('すべてのテスト患者・診療記録・操作履歴を削除しますか？'))return;localStorage.removeItem(PATIENT_KEY);localStorage.removeItem(AUDIT_KEY);Object.keys(localStorage).filter(k=>k.startsWith('morisakiDraftV07_')).forEach(k=>localStorage.removeItem(k));currentPatient=null;renderPatients();renderBackupStatus();alert('テストデータを削除しました')}
+
+let ocrImageData='';
+function prepareOcrScreen(){if(!$('ocrPreview').src)clearOcrImport(false)}
+function openOcrImport(){showScreen('ocrImport');window.scrollTo({top:0})}
+function bindOcrFileInput(id){$(id).addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith('image/')){alert('画像ファイルを選んでください');return}const r=new FileReader();r.onload=()=>{ocrImageData=r.result;$('ocrPreview').src=ocrImageData;$('ocrPreview').classList.remove('hidden');$('ocrStartBtn').disabled=false;$('ocrResultsCard').classList.add('hidden');$('ocrProgressWrap').classList.add('hidden')};r.readAsDataURL(f);e.target.value=''})}
+bindOcrFileInput('ocrCamera');bindOcrFileInput('ocrFile');
+function clearOcrImport(clearImage=true){if(clearImage){ocrImageData='';$('ocrPreview').src='';$('ocrPreview').classList.add('hidden');$('ocrStartBtn').disabled=true}['ocrName','ocrKana','ocrDob','ocrPostal','ocrPhone','ocrAddress','ocrOccupation','ocrReferrer','ocrChief','ocrHospital','ocrMedication','ocrMedical','ocrRawText'].forEach(id=>{if($(id))$(id).value=''});$('ocrSex').value='';$('ocrResultsCard').classList.add('hidden');$('ocrProgressWrap').classList.add('hidden');$('ocrProgressBar').style.width='0%'}
+function loadTesseract(){return new Promise((resolve,reject)=>{if(window.Tesseract)return resolve();let sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.onload=resolve;sc.onerror=()=>reject(new Error('OCRプログラムを読み込めませんでした'));document.head.appendChild(sc)})}
+async function startOcr(){if(!ocrImageData)return;$('ocrStartBtn').disabled=true;$('ocrProgressWrap').classList.remove('hidden');$('ocrProgressText').textContent='OCRを準備しています';try{await loadTesseract();const result=await Tesseract.recognize(ocrImageData,'jpn+eng',{logger:m=>{if(m.progress!=null){const pct=Math.round(m.progress*100);$('ocrProgressBar').style.width=pct+'%';$('ocrProgressText').textContent=`${ocrStatusJa(m.status)} ${pct}%`}}});const text=result.data.text||'';$('ocrRawText').value=text;parseQuestionnaireText(text);$('ocrResultsCard').classList.remove('hidden');$('ocrProgressText').textContent='解析が終わりました。原票と照合してください。';window.scrollTo({top:$('ocrResultsCard').offsetTop-80,behavior:'smooth'})}catch(e){console.error(e);alert('文字解析を開始できませんでした。通信状況を確認してください。画像は手動登録にも利用できます。');$('ocrProgressText').textContent='解析できませんでした'}finally{$('ocrStartBtn').disabled=false}}
+function ocrStatusJa(s){const m={'loading tesseract core':'OCR本体読込','initializing tesseract':'初期化','loading language traineddata':'日本語モデル読込','initializing api':'解析準備','recognizing text':'文字解析'};return m[s]||'処理中'}
+function cleanOcrLine(v=''){return v.replace(/[|｜]/g,'').replace(/\s+/g,' ').trim()}
+function firstMatch(text,patterns){for(const p of patterns){const m=text.match(p);if(m&&m[1])return cleanOcrLine(m[1])}return''}
+function parseQuestionnaireText(text){const t=text.replace(/\r/g,'');const lines=t.split('\n').map(cleanOcrLine).filter(Boolean);
+ const name=firstMatch(t,[/(?:お?名前|氏名)\s*[:：]?\s*([^\n]{2,20})/i]);
+ const kana=firstMatch(t,[/(?:フリガナ|ふりがな)\s*[:：]?\s*([^\n]{2,24})/i]);
+ const postal=firstMatch(t,/[〒]?\s*(\d{3}[-ー]?\d{4})/);
+ const phone=firstMatch(t,/((?:0\d{1,4})[-ー\s]?\d{1,4}[-ー\s]?\d{3,4})/);
+ const dob=firstMatch(t,[/(?:生年月日)\s*[:：]?\s*(?:昭和|平成|令和)?\s*([0-9０-９]{1,4}\s*年\s*[0-9０-９]{1,2}\s*月\s*[0-9０-９]{1,2}\s*日)/]);
+ const addr=firstMatch(t,[/(?:住所)\s*[:：]?\s*([^\n]{5,60})/]);
+ const occ=firstMatch(t,[/(?:職業)\s*[:：]?\s*([^\n]{1,25})/]);
+ const ref=firstMatch(t,[/(?:紹介|来院.*きっかけ)\s*[:：]?\s*([^\n]{1,35})/]);
+ const chief=extractSection(lines,['症状','困っている','主訴'],['いつから','発症','病院','受診']);
+ const hosp=extractSection(lines,['病院','受診','診断'],['薬','服薬','サプリ','既往']);
+ const med=extractSection(lines,['薬','服薬','サプリ'],['既往','その他','気になる']);
+ const medical=extractSection(lines,['既往','病歴'],['その他','気になる']);
+ $('ocrName').value=name;$('ocrKana').value=hiraToKata(kana);$('ocrPostal').value=formatPostalCode(postal);$('ocrPhone').value=phone.replace(/[ー\s]/g,'-');$('ocrAddress').value=addr;$('ocrOccupation').value=occ;$('ocrReferrer').value=ref;$('ocrChief').value=chief;$('ocrHospital').value=hosp;$('ocrMedication').value=med;$('ocrMedical').value=medical;
+ const sexText=t.match(/性別[^\n]*(男|女)/)?.[1];if(sexText)$('ocrSex').value=sexText==='男'?'男性':'女性';
+ if(dob)$('ocrDob').value=normalizeJapaneseDate(dob);
+}
+function extractSection(lines,starts,stops){let start=lines.findIndex(l=>starts.some(k=>l.includes(k)));if(start<0)return'';let vals=[];for(let i=start;i<Math.min(lines.length,start+5);i++){if(i>start&&stops.some(k=>lines[i].includes(k)))break;let v=lines[i].replace(new RegExp(starts.join('|'),'g'),'').replace(/^[:：\s]+/,'');if(v)vals.push(v)}return vals.join(' ').slice(0,240)}
+function normalizeJapaneseDate(v){const nums=(v.match(/[0-9０-９]+/g)||[]).map(x=>Number(x.replace(/[０-９]/g,c=>'０１２３４５６７８９'.indexOf(c))));if(nums.length<3)return'';let[y,m,d]=nums;if(y<100)y=new Date().getFullYear()-y;return `${String(y).padStart(4,'0')}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+function applyOcrToPatientForm(){clearPatientForm();$('name').value=$('ocrName').value.trim();$('kana').value=hiraToKata($('ocrKana').value.trim());$('sex').value=$('ocrSex').value;$('phone').value=$('ocrPhone').value.trim();$('postalCode').value=formatPostalCode($('ocrPostal').value);$('addressBase').value=$('ocrAddress').value.trim();$('occupation').value=$('ocrOccupation').value.trim();$('referrer').value=$('ocrReferrer').value.trim();$('chief').value=$('ocrChief').value.trim();let med=$('ocrMedication').value.trim();if(med){setYesNo('medication','あり',med)}let mh=$('ocrMedical').value.trim();if(mh){setYesNo('medicalHistory','あり',mh)}$('patientMemo').value=[ocrImageData?'問診票画像をOCR取り込み（試作）':'',$('ocrHospital').value.trim()].filter(Boolean).join('\n');let dob=$('ocrDob').value;if(/^\d{4}-\d{2}-\d{2}$/.test(dob))setBirthFromDob(dob);showScreen('patientForm');window.scrollTo({top:0});alert('OCR結果を患者登録の下書きへ反映しました。原票と照合してから保存してください。')}
+const DRUG_GUIDE={
+ 'ロキソニン':{generic:'ロキソプロフェンナトリウム水和物',class:'非ステロイド性抗炎症薬（NSAIDs）',use:'痛み・炎症・発熱を抑える目的で使われます。',note:'胃腸障害、腎機能、喘息などに注意が必要な場合があります。'},
+ 'ロキソプロフェン':{generic:'ロキソプロフェンナトリウム水和物',class:'非ステロイド性抗炎症薬（NSAIDs）',use:'痛み・炎症・発熱を抑える目的で使われます。',note:'胃腸障害、腎機能、喘息などに注意が必要な場合があります。'},
+ 'アムロジピン':{generic:'アムロジピンベシル酸塩',class:'カルシウム拮抗薬',use:'主に高血圧症や狭心症の治療に用いられます。',note:'めまい、ほてり、浮腫などがみられる場合があります。'},
+ 'メトホルミン':{generic:'メトホルミン塩酸塩',class:'ビグアナイド系糖尿病治療薬',use:'2型糖尿病の血糖管理に用いられます。',note:'腎機能や脱水、造影検査時などに特別な確認が必要な場合があります。'},
+ 'タケキャブ':{generic:'ボノプラザンフマル酸塩',class:'カリウムイオン競合型アシッドブロッカー（P-CAB）',use:'胃酸分泌を抑え、胃・十二指腸潰瘍や逆流性食道炎などに用いられます。',note:'治療目的・用量は処方内容で異なります。'},
+ 'プレドニン':{generic:'プレドニゾロン',class:'副腎皮質ステロイド',use:'炎症、アレルギー、自己免疫疾患など幅広い病態で用いられます。',note:'急な中止が適切でない場合があります。処方医の指示確認が必要です。'},
+ 'ジルテック':{generic:'セチリジン塩酸塩',class:'抗ヒスタミン薬',use:'アレルギー性鼻炎、じん麻疹、皮膚のかゆみなどに用いられます。',note:'眠気が出ることがあります。'},
+ 'カロナール':{generic:'アセトアミノフェン',class:'解熱鎮痛薬',use:'発熱や痛みを抑える目的で用いられます。',note:'過量服用や他のアセトアミノフェン含有薬との重複に注意が必要です。'}
+};
+function normalizeDrugName(v){return v.replace(/[錠カプセル細粒散シロップ0-9０-９\.．mgＭＧｍｇ\s]/gi,'').trim()}
+function lookupDrugGuide(){let q=$('drugQuery').value.trim();if(!q){alert('薬名を入力してください');return}let key=Object.keys(DRUG_GUIDE).find(k=>q.includes(k)||k.includes(normalizeDrugName(q)));let box=$('drugResult');box.classList.remove('hidden');if(key){let d=DRUG_GUIDE[key];box.innerHTML=`<strong>${esc(q)}</strong><br>一般名：${esc(d.generic)}<br>分類：${esc(d.class)}<br>概要：${esc(d.use)}<br><span class="note">注意：${esc(d.note)}<br>正式な効能・禁忌・相互作用はPMDA添付文書を確認してください。</span><br><button class="btn ghost small" style="margin-top:8px" onclick="openPmda()">PMDAの正式情報を開く</button>`}else{box.innerHTML=`<strong>${esc(q)}</strong><br>試作辞書には未登録です。薬名の綴りを原票やお薬手帳で確認し、PMDAの正式情報を検索してください。<br><button class="btn ghost small" style="margin-top:8px" onclick="openPmda()">PMDAで検索する</button>`}}
+function openPmda(){window.open('https://www.pmda.go.jp/PmdaSearch/iyakuSearch/','_blank','noopener')}
+function openDrugAssistantFromPatient(){showScreen('ocrImport');$('drugQuery').value=$('medicationDetail').value.split(/[、,\n]/)[0].trim();setTimeout(()=>{window.scrollTo({top:$('drugQuery').getBoundingClientRect().top+window.scrollY-100,behavior:'smooth'});if($('drugQuery').value)lookupDrugGuide()},100)}
+
 migrateV08();migrateV07();migrateV06();migrateV05();migrateV04();loadAppSettings();renderBackupStatus();
 renderPatients();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=081',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=09',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{}))}
 </script>
 </body></html>
